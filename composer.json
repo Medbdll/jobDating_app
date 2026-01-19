@@ -1,0 +1,12 @@
+{
+    "name": "job_dating/framework",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+           
+        }
+    },
+    "require": {
+        "twig/twig": "^3.22"
+    }
+}
