@@ -1,8 +1,9 @@
 --@block
-CREATE DATABASE IF NOT EXISTS job_dating_youcode
-USE job_dating;
+CREATE DATABASE IF NOT EXISTS job_dating_youcode;
+USE job_dating_youcode;
 
--- Table : users
+
+--@block Table : users
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -13,7 +14,7 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Table : students
+--@block Table : students
 
 CREATE TABLE students (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -24,7 +25,7 @@ CREATE TABLE students (
         ON DELETE CASCADE
 );
 
--- Table : companies
+--@block Table : companies
 CREATE TABLE companies (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
@@ -37,7 +38,7 @@ CREATE TABLE companies (
 );
 
 
--- Table : announcements
+--@block Table : announcements
 
 CREATE TABLE announcements (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -56,20 +57,4 @@ CREATE TABLE announcements (
 );
 
 
--- Table : login_attempts
-CREATE TABLE login_attempts (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(150) NOT NULL,
-    attempts INT DEFAULT 0,
-    last_attempt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
 
--- Table : sessions (bonus)
-CREATE TABLE sessions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    session_token VARCHAR(255),
-    last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-        ON DELETE CASCADE
-);
