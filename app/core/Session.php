@@ -81,6 +81,22 @@ class Session
     }
 
     /**
+     * Get all flash messages
+     */
+    public function getFlash(): array
+    {
+        $flashMessages = [];
+        foreach ($_SESSION as $key => $value) {
+            if (strpos($key, 'flash_') === 0) {
+                $flashKey = str_replace('flash_', '', $key);
+                $flashMessages[$flashKey] = $value;
+                $this->delete($key);
+            }
+        }
+        return $flashMessages;
+    }
+
+    /**
      * Régénère l'ID de session (sécurité)
      */
     public function regenerate(): void

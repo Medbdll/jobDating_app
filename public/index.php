@@ -4,6 +4,8 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use App\Core\Router;
 use App\Controllers\front\AuthController;
+use App\Controllers\back\DashboardController;
+use App\Controllers\back\AnnouncementController;
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -31,10 +33,17 @@ $router->get('/announcements', function() {
 });
 
 // Admin routes
-$router->get('/admin/dashboard', function() {
-    echo "Welcome to Admin Dashboard! <br>";
-    echo '<a href="/logout">Logout</a>';
-});
+$router->get('/admin/dashboard', [DashboardController::class, 'index']);
+
+// Announcement routes
+$router->get('/announcements/create', [AnnouncementController::class, 'create']);
+$router->post('/announcements/store', [AnnouncementController::class, 'store']);
+$router->get('/announcements/edit/{id}', [AnnouncementController::class, 'edit']);
+$router->post('/announcements/update/{id}', [AnnouncementController::class, 'update']);
+$router->get('/announcements/show/{id}', [AnnouncementController::class, 'show']);
+$router->post('/announcements/delete/{id}', [AnnouncementController::class, 'delete']);
+$router->get('/announcements/archived', [AnnouncementController::class, 'archived']);
+$router->post('/announcements/archive/{id}', [AnnouncementController::class, 'archive']);
 
 // 404 route
 $router->get('/404', function(){

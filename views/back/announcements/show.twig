@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ announcement.title }} - Job Dating YouCode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#667eea',
+                        secondary: '#764ba2',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-primary via-purple-600 to-secondary min-h-screen p-4 md:p-8">
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 opacity-10">
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.4"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+    </div>
+
+    <div class="max-w-5xl mx-auto relative z-10">
+        <!-- Header -->
+        <div class="glass-effect rounded-3xl shadow-2xl p-8 mb-8 border border-white/20">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-white to-gray-100 rounded-2xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-briefcase text-2xl text-primary"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-bold text-black">{{ announcement.title }}</h1>
+                        <p class="text-black/80 mt-1">Détails de l'annonce</p>
+                    </div>
+                </div>
+                <a href="/admin/dashboard" class="group bg-white/20 hover:bg-white/30 text-black px-6 py-3 rounded-xl flex items-center gap-3 transition-all duration-300 backdrop-blur-sm border border-white/30">
+                    <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+                    <span class="font-medium">Retour</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Flash Messages -->
+        {% if flash.success %}
+        <div class="bg-green-500/90 backdrop-blur-sm text-black px-6 py-4 rounded-2xl mb-6 animate-slide-up flex items-center gap-3 border border-green-400/30">
+            <i class="fas fa-check-circle text-xl"></i>
+            <span>{{ flash.success }}</span>
+        </div>
+        {% endif %}
+
+        {% if flash.error %}
+        <div class="bg-red-500/90 backdrop-blur-sm text-black px-6 py-4 rounded-2xl mb-6 animate-slide-up flex items-center gap-3 border border-red-400/30">
+            <i class="fas fa-exclamation-circle text-xl"></i>
+            <span>{{ flash.error }}</span>
+        </div>
+        {% endif %}
+
+        <!-- Announcement Details -->
+        <div class="glass-effect rounded-3xl shadow-2xl p-8 md:p-10 border border-white/20">
+            <!-- Company Info -->
+            <div class="mb-8 p-6 bg-white/50 rounded-2xl border border-white/30">
+                <h2 class="text-xl font-bold text-black mb-4 flex items-center gap-2">
+                    <i class="fas fa-building text-primary"></i>
+                    Entreprise
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">Nom de l'entreprise</p>
+                        <p class="font-semibold text-black">{{ announcement.company_name }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">Localisation</p>
+                        <p class="font-semibold text-black">{{ announcement.company_location }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job Details -->
+            <div class="mb-8 p-6 bg-white/50 rounded-2xl border border-white/30">
+                <h2 class="text-xl font-bold text-black mb-4 flex items-center gap-2">
+                    <i class="fas fa-info-circle text-primary"></i>
+                    Détails du poste
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">Type de contrat</p>
+                        <p class="font-semibold text-black bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm inline-block">
+                            {{ announcement.contract_type }}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">Localisation du poste</p>
+                        <p class="font-semibold text-black">{{ announcement.location }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-8 p-6 bg-white/50 rounded-2xl border border-white/30">
+                <h2 class="text-xl font-bold text-black mb-4 flex items-center gap-2">
+                    <i class="fas fa-align-left text-primary"></i>
+                    Description
+                </h2>
+                <div class="prose prose-gray max-w-none">
+                    <p class="text-gray-800 leading-relaxed">{{ announcement.description|nl2br }}</p>
+                </div>
+            </div>
+
+            <!-- Skills -->
+            {% if announcement.skills %}
+            <div class="mb-8 p-6 bg-white/50 rounded-2xl border border-white/30">
+                <h2 class="text-xl font-bold text-black mb-4 flex items-center gap-2">
+                    <i class="fas fa-tools text-primary"></i>
+                    Compétences requises
+                </h2>
+                <div class="flex flex-wrap gap-2">
+                    {% for skill in announcement.skills|split(',') %}
+                    <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                        {{ skill|trim }}
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 border-t border-white/20">
+                <div class="text-sm text-gray-600">
+                    <p>Publié le {{ announcement.created_at|date("d/m/Y à H:i") }}</p>
+                    {% if announcement.updated_at != announcement.created_at %}
+                    <p>Mis à jour le {{ announcement.updated_at|date("d/m/Y à H:i") }}</p>
+                    {% endif %}
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <a href="/announcements/edit/{{ announcement.id }}" class="bg-primary hover:bg-opacity-90 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 hover:shadow-lg">
+                        <i class="fas fa-edit"></i>
+                        Modifier
+                    </a>
+                    <button onclick="if(confirm('Êtes-vous sûr de vouloir archiver cette annonce?')) { window.location.href='/announcements/archive/{{ announcement.id }}'; }" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 hover:shadow-lg">
+                        <i class="fas fa-archive"></i>
+                        Archiver
+                    </button>
+                    <button onclick="if(confirm('Êtes-vous sûr de vouloir supprimer définitivement cette annonce? Cette action est irréversible!')) { window.location.href='/announcements/delete/{{ announcement.id }}'; }" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 hover:shadow-lg">
+                        <i class="fas fa-trash"></i>
+                        Supprimer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

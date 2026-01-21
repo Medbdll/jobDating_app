@@ -6,9 +6,21 @@ use App\Models\User;
 use App\Models\Company;
 use App\Models\Announcement;
 use App\Core\BaseController;
+use App\Core\Auth;
 
 class DashboardController extends BaseController
 {
+    private $auth;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->auth = new Auth();
+        
+        // Require admin authentication
+        $this->auth->requireAuth('admin');
+    }
+
     public function index()
     {
         $userModel = new User();

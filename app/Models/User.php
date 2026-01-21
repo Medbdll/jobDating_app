@@ -90,4 +90,16 @@ class User extends BaseModel
         $data['role'] = 'admin';
         return $this->create($data);
     }
+    
+    /**
+     * Count all students in the database
+     * @return int Number of students
+     */
+    public function countStudents()
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) as count FROM {$this->table} WHERE role = 'student'");
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return (int)$result['count'];
+    }
 }

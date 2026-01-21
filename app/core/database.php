@@ -14,9 +14,9 @@ class Database
     {
         try {
             $this->connection = new PDO(
-                "mysql:host=localhost;dbname=job_dating_youcode;charset=utf8",
+                "mysql:host=localhost;dbname=jobdating;charset=utf8",
                 "root",
-                "123456"
+                ""
             );
 
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

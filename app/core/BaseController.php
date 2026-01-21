@@ -35,6 +35,9 @@ class BaseController
         $data['success'] = $this->session->flash('success');
         $data['old'] = $this->session->flash('old');
         
+        // Add flash messages as a nested array for template access
+        $data['flash'] = $this->session->getFlash();
+        
         View::render($view, $data);
     }
 
