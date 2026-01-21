@@ -1,0 +1,17 @@
+{
+    "name": "pc/jobdating",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "mohamed boudlal",
+            "email": "mohamed.boudlal20@ump.ac.ma"
+        }
+    ],
+    "require": {
+        "twig/twig": "^3.19"
+    }
+}

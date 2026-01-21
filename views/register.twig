@@ -1,0 +1,369 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center px-4 py-8">
+    <div class="glass-effect rounded-3xl shadow-2xl p-0 w-full max-w-4xl overflow-hidden fade-in">
+        <!-- Header Section -->
+        <div class="bg-gradient-to-r from-purple-600 to-indigo-600 p-8 text-center">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur rounded-full mb-4">
+                <i class="fas fa-rocket text-white text-3xl"></i>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">Rejoignez Job Dating</h1>
+            <p class="text-purple-100 text-lg">Créez votre profil professionnel en quelques clics</p>
+        </div>
+        
+        <!-- Form Section -->
+        <div class="p-8">
+            <!-- Alerts -->
+            {% if error %}
+                <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-lg mb-6 flex items-start animate-pulse">
+                    <i class="fas fa-exclamation-circle mr-3 mt-1"></i>
+                    <div>
+                        <strong class="block mb-1">Erreur!</strong>
+                        {{ error }}
+                    </div>
+                </div>
+            {% endif %}
+            
+            {% if errors %}
+                <div class="bg-amber-50 border-l-4 border-amber-500 text-amber-800 p-4 rounded-lg mb-6">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        <strong class="text-lg">Veuillez corriger les erreurs suivantes:</strong>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                        {% for field, fieldErrors in errors %}
+                            {% for fieldError in fieldErrors %}
+                                <div class="flex items-start">
+                                    <i class="fas fa-chevron-right mr-2 text-amber-600 mt-0.5"></i>
+                                    <span>{{ fieldError }}</span>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            
+            {% if success %}
+                <div class="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-lg mb-6 flex items-center">
+                    <i class="fas fa-check-circle mr-3 text-green-500 text-xl"></i>
+                    <div>
+                        <strong class="block text-lg mb-1">Inscription réussie!</strong>
+                        {{ success }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <form method="post" action="/register" class="space-y-6">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                
+                <!-- Account Type Selection -->
+                <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
+                    <label class="block text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-user-cog mr-2 text-purple-600"></i>Type de compte
+                    </label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="role" value="student" {{ old.role == 'student' ? 'checked' : '' }} class="peer sr-only" required onchange="toggleRoleFields()">
+                            <div class="flex items-center p-4 border-2 rounded-lg transition-all peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:border-purple-300">
+                                <i class="fas fa-graduation-cap text-2xl mr-3 text-purple-600"></i>
+                                <div>
+                                    <strong class="block text-gray-800">Étudiant</strong>
+                                    <span class="text-sm text-gray-600">Accès aux offres d'emploi</span>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="role" value="admin" {{ old.role == 'admin' ? 'checked' : '' }} class="peer sr-only" onchange="toggleRoleFields()">
+                            <div class="flex items-center p-4 border-2 rounded-lg transition-all peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:border-purple-300">
+                                <i class="fas fa-shield-alt text-2xl mr-3 text-purple-600"></i>
+                                <div>
+                                    <strong class="block text-gray-800">Administrateur</strong>
+                                    <span class="text-sm text-gray-600">Gestion de la plateforme</span>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Personal Information -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-id-card mr-2 text-purple-600"></i>Informations personnelles
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label for="name" class="block text-sm font-medium text-gray-700">
+                                <i class="fas fa-user mr-2"></i>Nom complet
+                            </label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                name="name" 
+                                placeholder="Jean Dupont" 
+                                value="{{ old.name ?? '' }}" 
+                                required
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                            >
+                            {% if errors.name %}
+                                <div class="mt-2 text-red-500 text-sm flex items-center">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    {% for error in errors.name %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label for="email" class="block text-sm font-medium text-gray-700">
+                                <i class="fas fa-envelope mr-2"></i>Email professionnel
+                            </label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                placeholder="jean.dupont@email.com" 
+                                value="{{ old.email ?? '' }}" 
+                                required
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                            >
+                            {% if errors.email %}
+                                <div class="mt-2 text-red-500 text-sm flex items-center">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    {% for error in errors.email %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Security Section -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-lock mr-2 text-purple-600"></i>Sécurité du compte
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label for="password" class="block text-sm font-medium text-gray-700">
+                                <i class="fas fa-key mr-2"></i>Mot de passe
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    name="password" 
+                                    placeholder="Min 8 caractères" 
+                                    required 
+                                    minlength="8"
+                                    class="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                >
+                                <button type="button" onclick="togglePassword('password', 'passwordToggle')" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-purple-600 transition-colors">
+                                    <i class="fas fa-eye" id="passwordToggle"></i>
+                                </button>
+                            </div>
+                            {% if errors.password %}
+                                <div class="mt-2 text-red-500 text-sm flex items-center">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    {% for error in errors.password %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label for="password_confirmation" class="block text-sm font-medium text-gray-700">
+                                <i class="fas fa-check-double mr-2"></i>Confirmation
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="password" 
+                                    id="password_confirmation" 
+                                    name="password_confirmation" 
+                                    placeholder="Confirmer le mot de passe" 
+                                    required
+                                    class="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                >
+                                <button type="button" onclick="togglePassword('password_confirmation', 'confirmToggle')" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-purple-600 transition-colors">
+                                    <i class="fas fa-eye" id="confirmToggle"></i>
+                                </button>
+                            </div>
+                            {% if errors.password_confirmation %}
+                                <div class="mt-2 text-red-500 text-sm flex items-center">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    {% for error in errors.password_confirmation %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Student Fields -->
+                <div id="student-fields" class="hidden">
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                        <h3 class="text-lg font-semibold text-blue-800 mb-4 flex items-center">
+                            <i class="fas fa-university mr-2"></i>Informations académiques
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label for="promotion" class="block text-sm font-medium text-gray-700">
+                                    <i class="fas fa-calendar-alt mr-2"></i>Promotion
+                                </label>
+                                <select 
+                                    id="promotion" 
+                                    name="promotion"
+                                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                >
+                                    <option value="">Sélectionner une promotion</option>
+                                    <option value="2023-2024" {{ old.promotion == '2023-2024' ? 'selected' : '' }}>2023-2024</option>
+                                    <option value="2024-2025" {{ old.promotion == '2024-2025' ? 'selected' : '' }}>2024-2025</option>
+                                    <option value="2025-2026" {{ old.promotion == '2025-2026' ? 'selected' : '' }}>2025-2026</option>
+                                    <option value="2026-2027" {{ old.promotion == '2026-2027' ? 'selected' : '' }}>2026-2027</option>
+                                </select>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <label for="specialization" class="block text-sm font-medium text-gray-700">
+                                    <i class="fas fa-book-open mr-2"></i>Spécialisation
+                                </label>
+                                <select 
+                                    id="specialization" 
+                                    name="specialization"
+                                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                >
+                                    <option value="">Sélectionner une spécialisation</option>
+                                    <option value="informatique" {{ old.specialization == 'informatique' ? 'selected' : '' }}>Informatique</option>
+                                    <option value="genie-civil" {{ old.specialization == 'genie-civil' ? 'selected' : '' }}>Génie Civil</option>
+                                    <option value="electrique" {{ old.specialization == 'electrique' ? 'selected' : '' }}>Génie Électrique</option>
+                                    <option value="mecanique" {{ old.specialization == 'mecanique' ? 'selected' : '' }}>Génie Mécanique</option>
+                                    <option value="management" {{ old.specialization == 'management' ? 'selected' : '' }}>Management</option>
+                                    <option value="marketing" {{ old.specialization == 'marketing' ? 'selected' : '' }}>Marketing</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Admin Fields -->
+                <div id="admin-fields" class="hidden">
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
+                        <h3 class="text-lg font-semibold text-purple-800 mb-4 flex items-center">
+                            <i class="fas fa-crown mr-2"></i>Privilèges administrateur
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center p-4 bg-white/50 rounded-lg">
+                                <i class="fas fa-check-circle text-green-500 text-xl mr-3"></i>
+                                <div>
+                                    <strong class="block text-gray-800">Accès complet au tableau de bord</strong>
+                                    <span class="text-sm text-gray-600">Gestion des utilisateurs et annonces</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-4 bg-white/50 rounded-lg">
+                                <i class="fas fa-chart-line text-blue-500 text-xl mr-3"></i>
+                                <div>
+                                    <strong class="block text-gray-800">Statistiques avancées</strong>
+                                    <span class="text-sm text-gray-600">Suivi des candidatures et offres</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Section -->
+                <div class="flex flex-col sm:flex-row gap-4 items-center justify-between pt-6 border-t border-gray-200">
+                    <div class="flex items-center text-sm text-gray-600">
+                        <i class="fas fa-shield-alt mr-2"></i>
+                        Vos données sont sécurisées et protégées
+                    </div>
+                    <button type="submit" class="btn-primary px-8 py-4 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center">
+                        <i class="fas fa-rocket mr-3"></i>
+                        Créer mon compte
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Footer -->
+            <div class="mt-8 text-center border-t border-gray-200 pt-6">
+                <p class="text-gray-600 mb-2">
+                    <i class="fas fa-question-circle mr-2"></i>
+                    Vous avez déjà un compte?
+                </p>
+                <a href="/login" class="inline-flex items-center text-purple-600 hover:text-purple-500 font-semibold text-lg transition-colors">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Se connecter maintenant
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const password = document.getElementById('password');
+    const passwordConfirm = document.getElementById('password_confirmation');
+    const roleSelect = document.getElementById('role');
+    const studentFields = document.getElementById('student-fields');
+    const adminFields = document.getElementById('admin-fields');
+    
+    function toggleRoleFields() {
+        const role = document.querySelector('input[name="role"]:checked')?.value;
+        
+        if (role === 'student') {
+            studentFields.classList.remove('hidden');
+            studentFields.classList.add('fade-in');
+            adminFields.classList.add('hidden');
+            document.getElementById('promotion').required = true;
+            document.getElementById('specialization').required = true;
+        } else if (role === 'admin') {
+            studentFields.classList.add('hidden');
+            adminFields.classList.remove('hidden');
+            adminFields.classList.add('fade-in');
+            document.getElementById('promotion').required = false;
+            document.getElementById('specialization').required = false;
+        } else {
+            studentFields.classList.add('hidden');
+            adminFields.classList.add('hidden');
+        }
+    }
+    
+    window.toggleRoleFields = toggleRoleFields;
+    
+    form.addEventListener('submit', function(e) {
+        if (password.value !== passwordConfirm.value) {
+            e.preventDefault();
+            showNotification('Les mots de passe ne correspondent pas', 'error');
+            password.focus();
+        }
+    });
+});
+
+function togglePassword(fieldId, toggleId) {
+    const passwordField = document.getElementById(fieldId);
+    const toggleIcon = document.getElementById(toggleId);
+    
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 flex items-center ${
+        type === 'error' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
+    }`;
+    notification.innerHTML = `
+        <i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'} mr-3"></i>
+        ${message}
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+</script>
+{% endblock %}
