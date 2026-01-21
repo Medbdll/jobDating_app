@@ -38,7 +38,7 @@ class Student extends BaseModel
             $studentStmt->execute([
                 'user_id' => $userId,
                 'promotion' => $studentData['promotion'],
-                'specialisation' => $studentData['specialisation']
+                'specialisation' => $studentData['specialization']
             ]);
 
             $this->db->commit();
