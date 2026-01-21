@@ -31,14 +31,14 @@ class Student extends BaseModel
 
             // Insert student record
             $studentStmt = $this->db->prepare("
-                INSERT INTO {$this->table} (user_id, promotion, specialization, created_at) 
-                VALUES (:user_id, :promotion, :specialization, NOW())
+                INSERT INTO {$this->table} (user_id, promotion, specialisation) 
+                VALUES (:user_id, :promotion, :specialisation)
             ");
             
             $studentStmt->execute([
                 'user_id' => $userId,
                 'promotion' => $studentData['promotion'],
-                'specialization' => $studentData['specialization']
+                'specialisation' => $studentData['specialisation']
             ]);
 
             $this->db->commit();
