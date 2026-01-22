@@ -5,6 +5,7 @@ namespace App\Controllers\back;
 use App\Models\User;
 use App\Models\Company;
 use App\Models\Announcement;
+use App\Models\Application;
 use App\Core\BaseController;
 use App\Core\Auth;
 
@@ -26,6 +27,7 @@ class DashboardController extends BaseController
         $userModel = new User();
         $companyModel = new Company();
         $announcementModel = new Announcement();
+        $applicationModel = new Application();
 
         $stats = [
             'students'      => $userModel->countStudents(),
@@ -35,10 +37,12 @@ class DashboardController extends BaseController
         ];
 
         $recentAnnouncements = $announcementModel->getRecent(3);
+        $recentApplications = $applicationModel->getRecentApplications(5);
 
         $this->render('back/dashboard/index', [
             'stats' => $stats,
-            'recentAnnouncements' => $recentAnnouncements
+            'recentAnnouncements' => $recentAnnouncements,
+            'recentApplications' => $recentApplications
         ]);
     }
 }
