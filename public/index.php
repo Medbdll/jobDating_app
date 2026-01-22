@@ -8,6 +8,7 @@ use App\Controllers\front\DashboardController as FrontDashboardController;
 use App\Controllers\back\DashboardController;
 use App\Controllers\back\StudentController;
 use App\Controllers\back\AnnouncementController;
+use App\Controllers\back\CampanyController;
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -54,6 +55,14 @@ $router->get('/announcements/show/{id}', [AnnouncementController::class, 'show']
 $router->post('/announcements/delete/{id}', [AnnouncementController::class, 'delete']);
 $router->get('/announcements/archived', [AnnouncementController::class, 'archived']);
 $router->post('/announcements/archive/{id}', [AnnouncementController::class, 'archive']);
+
+// Company routes
+$router->get('/companies/create', [CampanyController::class, 'create']);
+$router->post('/companies/store', [CampanyController::class, 'store']);
+$router->get('/companies', [CampanyController::class, 'index']);
+$router->get('/companies/edit/{id}', [CampanyController::class, 'edit']);
+$router->post('/companies/update/{id}', [CampanyController::class, 'update']);
+$router->post('/companies/delete/{id}', [CampanyController::class, 'delete']);
 
 // 404 route
 $router->get('/404', function(){
