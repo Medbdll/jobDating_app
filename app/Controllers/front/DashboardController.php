@@ -26,10 +26,21 @@ class DashboardController extends BaseController
     {
         $announcementModel = new Announcement();
         $companyModel = new Company();
+        $applicationModel = new Application();
         $session = Session::getInstance();
 
-        // Get all active announcements
-        $announcements = $announcementModel->getAllActive();
+        // Handle search functionality
+        $searchQuery = $_GET['search'] ?? null;
+        
+        if ($searchQuery && !empty(trim($searchQuery))) {
+            $announcements = $announcementModel->search(trim($searchQuery));
+        } else {
+            $announcements = $announcementModel->getAllActive();
+        }
+        
+        // Check if student has already applied to any announcement
+        $studentId = $applicationModel->getStudentIdByUserId($session->get('user_id'));
+        $hasAnyApplication = $studentId ? $applicationModel->hasApplied($studentId) : false;
         
         // Get statistics
         $stats = [
@@ -40,6 +51,8 @@ class DashboardController extends BaseController
         $this->render('front/dashboard/index', [
             'announcements' => $announcements,
             'stats' => $stats,
+            'has_any_application' => $hasAnyApplication,
+            'search_query' => $searchQuery,
             'session' => $session,
             'flash_messages' => $session->getFlash()
         ]);
@@ -56,15 +69,18 @@ class DashboardController extends BaseController
             return;
         }
 
-        // Check if student has already applied
+        // Check if student has already applied to any announcement
         $session = Session::getInstance();
         $applicationModel = new Application();
         $studentId = $applicationModel->getStudentIdByUserId($session->get('user_id'));
-        $hasApplied = $studentId ? $applicationModel->hasApplied($studentId, $id) : false;
+        $hasApplied = $studentId ? $applicationModel->hasApplied($studentId) : false; // Check any application
+        $hasAppliedToThis = $hasApplied ? $applicationModel->hasApplied($studentId, $id) : false; // Check specific announcement
         
         $this->render('front/dashboard/show', [
             'announcement' => $announcement,
             'has_applied' => $hasApplied,
+            'has_applied_to_this' => $hasAppliedToThis,
+            'has_any_application' => $hasApplied, // New variable for UI consistency
             'session' => $session,
             'flash_messages' => $session->getFlash()
         ]);
@@ -80,14 +96,15 @@ class DashboardController extends BaseController
             $this->redirect('/student/dashboard');
             return;
         }
-
+        
+        // Check if student has already applied to any announcement
         $session = Session::getInstance();
         $applicationModel = new Application();
         $studentId = $applicationModel->getStudentIdByUserId($session->get('user_id'));
-
-        // Check if student has already applied
-        if ($applicationModel->hasApplied($studentId, $id)) {
-            $_SESSION['flash']['error'] = 'Vous avez déjà postulé à cette annonce';
+        $hasApplied = $studentId ? $applicationModel->hasApplied($studentId) : false; // Check any application
+        
+        if ($hasApplied) {
+            $_SESSION['flash']['error'] = 'Vous avez déjà postulé à une offre. Vous ne pouvez postuler qu\'à une seule offre.';
             $this->redirect("/student/dashboard/announcement/{$id}");
             return;
         }
@@ -119,9 +136,11 @@ class DashboardController extends BaseController
         $applicationModel = new Application();
         $studentId = $applicationModel->getStudentIdByUserId($session->get('user_id'));
 
-        // Check if student has already applied
-        if ($applicationModel->hasApplied($studentId, $id)) {
-            $_SESSION['flash']['error'] = 'Vous avez déjà postulé à cette annonce';
+        // Check if student has already applied to any announcement
+        $hasApplied = $studentId ? $applicationModel->hasApplied($studentId) : false; // Check any application
+
+        if ($hasApplied) {
+            $_SESSION['flash']['error'] = 'Vous avez déjà postulé à une offre. Vous ne pouvez postuler qu\'à une seule offre.';
             $this->redirect("/student/dashboard/announcement/{$id}");
             return;
         }

@@ -37,16 +37,28 @@ class Application extends BaseModel
     /**
      * Check if student has already applied to announcement
      */
-    public function hasApplied($studentId, $announcementId)
+    public function hasApplied($studentId, $announcementId = null)
     {
-        $stmt = $this->db->prepare("
-            SELECT COUNT(*) FROM {$this->table} 
-            WHERE student_id = :student_id AND announcement_id = :announcement_id
-        ");
-        $stmt->execute([
-            'student_id' => $studentId,
-            'announcement_id' => $announcementId
-        ]);
+        if ($announcementId) {
+            // Check specific announcement
+            $stmt = $this->db->prepare("
+                SELECT COUNT(*) FROM {$this->table} 
+                WHERE student_id = :student_id AND announcement_id = :announcement_id
+            ");
+            $stmt->execute([
+                'student_id' => $studentId,
+                'announcement_id' => $announcementId
+            ]);
+        } else {
+            // Check any application
+            $stmt = $this->db->prepare("
+                SELECT COUNT(*) FROM {$this->table} 
+                WHERE student_id = :student_id
+            ");
+            $stmt->execute([
+                'student_id' => $studentId
+            ]);
+        }
         return $stmt->fetchColumn() > 0;
     }
 

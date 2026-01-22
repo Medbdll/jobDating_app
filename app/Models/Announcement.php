@@ -102,8 +102,9 @@ class Announcement extends BaseModel
     public function getAllActive()
     {
         $stmt = $this->db->prepare("
-            SELECT a.*
+            SELECT a.*, c.name as company_name
             FROM {$this->table} a 
+            LEFT JOIN companies c ON a.company_id = c.id 
             WHERE a.deleted = 0 
             ORDER BY a.created_at DESC
         ");
@@ -111,9 +112,33 @@ class Announcement extends BaseModel
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public function search($query)
+    {
+        $stmt = $this->db->prepare("
+            SELECT a.*, c.name as company_name
+            FROM {$this->table} a 
+            LEFT JOIN companies c ON a.company_id = c.id 
+            WHERE a.deleted = 0 
+            AND (
+                a.title LIKE :query 
+                OR a.description LIKE :query 
+                OR a.location LIKE :query 
+                OR a.skills LIKE :query 
+                OR a.contract_type LIKE :query 
+                OR c.name LIKE :query
+            )
+            ORDER BY a.created_at DESC
+        ");
+        
+        $searchTerm = "%" . $query . "%";
+        $stmt->bindValue(':query', $searchTerm, \PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function delete($id)
     {
-        $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id = :id");
+        $stmt = $this->db->prepare("UPDATE {$this->table} SET deleted = 1 WHERE id = :id");
         return $stmt->execute(['id' => $id]);
     }
 }
