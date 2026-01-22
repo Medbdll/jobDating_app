@@ -52,9 +52,8 @@ class User extends BaseModel
         // Hash the password
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         
-        // Add timestamps
+        // Add timestamp
         $data['created_at'] = date('Y-m-d H:i:s');
-        $data['updated_at'] = date('Y-m-d H:i:s');
         
         $columns = implode(", ", array_keys($data));      
         $placeholders = ":" . implode(", :", array_keys($data));

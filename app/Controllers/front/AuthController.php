@@ -31,7 +31,7 @@ class AuthController extends BaseController
     {
         // Redirect if already logged in
         if ($this->auth->isLoggedIn()) {
-            header('Location: /announcements');
+            header('Location: /student/dashboard');
             exit;
         }
 
@@ -104,7 +104,7 @@ class AuthController extends BaseController
         if ($user['role'] === 'admin') {
             header('Location: /admin/dashboard');
         } else {
-            header('Location: /announcements');
+            header('Location: /student/dashboard');
         }
         exit;
     }
@@ -133,7 +133,7 @@ class AuthController extends BaseController
             if ($this->auth->isAdmin()) {
                 header('Location: /admin/dashboard');
             } else {
-                header('Location: /announcements');
+                header('Location: /student/dashboard');
             }
             exit;
         }
@@ -255,7 +255,7 @@ class AuthController extends BaseController
                     $user = $this->auth->login($userData['email'], $_POST['password'], 'student');
                     
                     $this->session->flash('success', 'Inscription réussie ! Bienvenue ' . $userData['name']);
-                    header('Location: /announcements');
+                    header('Location: /student/dashboard');
                     exit;
                 }
             }
