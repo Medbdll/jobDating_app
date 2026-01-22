@@ -29,7 +29,7 @@ class View
     public static function render(string $template, array $data = []): void
     {
         if (self::$twig === null) {
-            $loader = new FilesystemLoader('../views');
+            $loader = new FilesystemLoader(__DIR__ . '/../../views');
 
             self::$twig = new Environment($loader, [
                 'cache' => false, // __DIR__ . '/../../storage/cache' in prod

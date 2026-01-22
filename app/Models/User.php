@@ -54,7 +54,6 @@ class User extends BaseModel
         
         // Add timestamps
         $data['created_at'] = date('Y-m-d H:i:s');
-        $data['updated_at'] = date('Y-m-d H:i:s');
         
         $columns = implode(", ", array_keys($data));      
         $placeholders = ":" . implode(", :", array_keys($data));

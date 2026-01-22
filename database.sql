@@ -118,6 +118,8 @@ CREATE TABLE `applications` (
 -- =============================================
 -- Table: login_attempts (for security)
 -- =============================================
+
+--@block
 CREATE TABLE `login_attempts` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `email` varchar(255) NOT NULL,
