@@ -98,7 +98,7 @@ class Security
         return $stmt->execute([
             'email' => $email,
             'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
-            'success' => $success
+            'success' => $success ? 1 : 0
         ]);
     }
 
