@@ -114,12 +114,16 @@
                         <a href="/announcements/edit/{{ announcement.id }}" class="bg-primary hover:bg-opacity-90 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2 transition-all duration-300 hover:shadow-lg">
                             <span>✏️</span> Modifier
                         </a>
-                        <a href="/announcements/archive/{{ announcement.id }}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2 transition-all duration-300 hover:shadow-lg" onclick="return confirm('Êtes-vous sûr de vouloir archiver cette annonce?')">
-                            <span>📦</span> Archiver
-                        </a>
-                        <a href="/announcements/delete/{{ announcement.id }}" class="bg-dark hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2 transition-all duration-300 hover:shadow-lg" onclick="return confirm('Êtes-vous sûr de vouloir supprimer définitivement cette annonce? Cette action est irréversible!')">
-                            <span>🗑️</span> Supprimer
-                        </a>
+                        <form action="/announcements/archive/{{ announcement.id }}" method="POST" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir archiver cette annonce?')">
+                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2 transition-all duration-300 hover:shadow-lg">
+                                <span>📦</span> Archiver
+                            </button>
+                        </form>
+                        <form action="/announcements/delete/{{ announcement.id }}" method="POST" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer définitivement cette annonce? Cette action est irréversible!')">
+                            <button type="submit" class="bg-dark hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2 transition-all duration-300 hover:shadow-lg">
+                                <span>🗑️</span> Supprimer
+                            </button>
+                        </form>
                     </div>
                 </div>
                 {% else %}
@@ -192,7 +196,7 @@
         }
         function addCompany(e) {
             e.preventDefault();
-            alert('Redirection vers l\'ajout d\'entreprise');
+            window.location.href = '/companies/create';
         }
 
         function viewArchived(e) {
