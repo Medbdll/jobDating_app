@@ -4,7 +4,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use App\Core\Router;
 use App\Controllers\front\AuthController;
+use App\Controllers\front\DashboardController as FrontDashboardController;
 use App\Controllers\back\DashboardController;
+use App\Controllers\back\StudentController;
 use App\Controllers\back\AnnouncementController;
 use App\Controllers\back\CampanyController;
 
@@ -28,6 +30,14 @@ $router->get('/register', [AuthController::class, 'showRegister']);
 $router->post('/register', [AuthController::class, 'register']);
 
 // Student routes
+$router->get('/student/dashboard', [StudentController::class, 'dashboard']);
+$router->get('/student/dashboard/profile', [StudentController::class, 'profile']);
+$router->post('/student/dashboard/profile', [StudentController::class, 'profile']);
+$router->get('/student/dashboard/applications', [StudentController::class, 'applications']);
+$router->get('/student/dashboard/announcement/{id}', [FrontDashboardController::class, 'showAnnouncement']);
+$router->get('/student/dashboard/apply/{id}', [FrontDashboardController::class, 'apply']);
+$router->post('/student/dashboard/apply/{id}/store', [FrontDashboardController::class, 'storeApplication']);
+$router->get('/student/dashboard/applications', [FrontDashboardController::class, 'myApplications']);
 $router->get('/announcements', function() {
     echo "Welcome to Student Announcements Page! <br>";
     echo '<a href="/logout">Logout</a>';

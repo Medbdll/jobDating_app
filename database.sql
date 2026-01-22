@@ -1,267 +1,158 @@
--- =============================================
--- Job Dating Database Schema
--- =============================================
+-- Active: 1769076099731@@127.0.0.1@3306@job_dating_youcode
+-- --------------------------------------------------------
+-- Hôte:                         127.0.0.1
+-- Version du serveur:           8.0.30 - MySQL Community Server - GPL
+-- SE du serveur:                Win64
+-- HeidiSQL Version:             12.1.0.6537
+-- --------------------------------------------------------
 
--- Drop existing tables if they exist
-DROP TABLE IF EXISTS `user_sessions`;
-DROP TABLE IF EXISTS `applications`;
-DROP TABLE IF EXISTS `announcements`;
-DROP TABLE IF EXISTS `students`;
-DROP TABLE IF EXISTS `users`;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
--- =============================================
--- Table: users
--- =============================================
-CREATE TABLE `users` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `name` varchar(255) NOT NULL,
-    `email` varchar(255) NOT NULL,
-    `password` varchar(255) NOT NULL,
-    `role` enum('student','admin') NOT NULL DEFAULT 'student',
-    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `unique_email` (`email`),
-    KEY `idx_role` (`role`),
-    KEY `idx_created_at` (`created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =============================================
--- Table: students
--- =============================================
-CREATE TABLE `students` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `user_id` int(11) NOT NULL,
-    `promotion` varchar(50) NOT NULL,
-    `specialization` varchar(100) NOT NULL,
-    `cv_path` varchar(255) DEFAULT NULL,
-    `linkedin_url` varchar(255) DEFAULT NULL,
-    `portfolio_url` varchar(255) DEFAULT NULL,
-    `bio` text DEFAULT NULL,
-    `skills` text DEFAULT NULL,
-    `looking_for_job` tinyint(1) DEFAULT 1,
-    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `unique_user_id` (`user_id`),
-    KEY `idx_promotion` (`promotion`),
-    KEY `idx_specialization` (`specialization`),
-    KEY `idx_looking_for_job` (`looking_for_job`),
-    CONSTRAINT `fk_students_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Listage de la structure de la base pour job_dating_youcode
+CREATE DATABASE IF NOT EXISTS `job_dating_youcode` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `job_dating_youcode`;
 
--- =============================================
--- Table: user_sessions (for session management)
--- =============================================
-CREATE TABLE `user_sessions` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `user_id` int(11) DEFAULT NULL,
-    `session_id` varchar(255) NOT NULL,
-    `ip_address` varchar(45) DEFAULT NULL,
-    `user_agent` text DEFAULT NULL,
-    `expires_at` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP + INTERVAL 2 HOUR),
-    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `unique_session_id` (`session_id`),
-    KEY `idx_user_id` (`user_id`),
-    KEY `idx_expires_at` (`expires_at`),
-    CONSTRAINT `fk_sessions_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Listage de la structure de table job_dating_youcode. announcements
+CREATE TABLE IF NOT EXISTS `announcements` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `company_id` int NOT NULL,
+  `title` varchar(150) NOT NULL,
+  `description` text NOT NULL,
+  `contract_type` varchar(50) DEFAULT NULL,
+  `location` varchar(100) DEFAULT NULL,
+  `skills` text,
+  `image` varchar(255) DEFAULT NULL,
+  `deleted` tinyint(1) DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `company_id` (`company_id`),
+  CONSTRAINT `announcements_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- =============================================
--- Table: announcements (for job postings)
--- =============================================
-CREATE TABLE `announcements` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `title` varchar(255) NOT NULL,
-    `description` text NOT NULL,
-    `company` varchar(255) NOT NULL,
-    `location` varchar(255) DEFAULT NULL,
-    `type` enum('internship','job','alternance') NOT NULL DEFAULT 'internship',
-    `duration` varchar(100) DEFAULT NULL,
-    `salary` varchar(100) DEFAULT NULL,
-    `requirements` text DEFAULT NULL,
-    `contact_email` varchar(255) NOT NULL,
-    `is_active` tinyint(1) DEFAULT 1,
-    `expires_at` timestamp NULL DEFAULT NULL,
-    `created_by` int(11) NOT NULL,
-    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    KEY `idx_type` (`type`),
-    KEY `idx_is_active` (`is_active`),
-    KEY `idx_expires_at` (`expires_at`),
-    KEY `idx_created_by` (`created_by`),
-    CONSTRAINT `fk_announcements_created_by` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Listage des données de la table job_dating_youcode.announcements : ~5 rows (environ)
+DELETE FROM `announcements`;
+INSERT INTO `announcements` (`id`, `company_id`, `title`, `description`, `contract_type`, `location`, `skills`, `image`, `deleted`, `created_at`, `updated_at`) VALUES
+	(7, 1, 'Aut tempor eaque eum', 'Tenetur dolorem fugi', 'CDI', 'Dolores ullam nostru', 'Qui et iste enim qui', NULL, 0, '2026-01-22 10:09:11', '2026-01-22 10:09:11'),
+	(8, 6, 'maroua', 'hjkjkhkdksd', 'Stage', 'meknes', 'javascript', NULL, 1, '2026-01-22 10:44:48', '2026-01-22 10:45:02'),
+	(9, 7, 'Consequat Quibusdam', 'Illum ex illo ea et', 'CDI', 'Sunt autem dolorum ', 'Qui delectus conseq', NULL, 0, '2026-01-22 10:46:32', '2026-01-22 10:46:32');
 
--- =============================================
--- Table: applications (student job applications)
--- =============================================
-CREATE TABLE `applications` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `student_id` int(11) NOT NULL,
-    `announcement_id` int(11) NOT NULL,
-    `cover_letter` text DEFAULT NULL,
-    `status` enum('pending','accepted','rejected') NOT NULL DEFAULT 'pending',
-    `applied_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `unique_application` (`student_id`, `announcement_id`),
-    KEY `idx_student_id` (`student_id`),
-    KEY `idx_announcement_id` (`announcement_id`),
-    KEY `idx_status` (`status`),
-    CONSTRAINT `fk_applications_student_id` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `fk_applications_announcement_id` FOREIGN KEY (`announcement_id`) REFERENCES `announcements` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Listage de la structure de table job_dating_youcode. companies
+CREATE TABLE IF NOT EXISTS `companies` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(150) NOT NULL,
+  `sector` varchar(100) DEFAULT NULL,
+  `location` varchar(100) DEFAULT NULL,
+  `email` varchar(150) NOT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `avatar` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- =============================================
--- Table: login_attempts (for security)
--- =============================================
+-- Listage des données de la table job_dating_youcode.companies : ~3 rows (environ)
+DELETE FROM `companies`;
+INSERT INTO `companies` (`id`, `name`, `sector`, `location`, `email`, `phone`, `avatar`, `created_at`) VALUES
+	(1, 'Tech Solutions', 'Technologie', 'Casablanca', 'contact@techsolutions.ma', '0522123456', NULL, '2026-01-21 09:57:44'),
+	(4, 'Garrison Fletcher', NULL, 'Exercitationem eaque', 'xorig@mailinator.com', '+1 (195) 396-6486', NULL, '2026-01-22 10:10:04'),
+	(5, 'Heidi Mueller', 'Est eu at illo odio ', 'Assumenda voluptatem', 'fody@mailinator.com', '+1 (924) 106-1437', NULL, '2026-01-22 10:10:34'),
+	(6, 'maroua kourdi', 'maroc', 'raba', 'maroua@gmail.com', '+1 (695) 814-7558', NULL, '2026-01-22 10:12:08'),
+	(7, 'Roary Bell', 'Sit voluptatem ipsam', 'Voluptas dolore ulla', 'rizuv@mailinator.com', '+1 (698) 884-3843', NULL, '2026-01-22 10:42:10');
 
---@block
-CREATE TABLE `login_attempts` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `email` varchar(255) NOT NULL,
-    `ip_address` varchar(45) NOT NULL,
-    `success` tinyint(1) NOT NULL DEFAULT 0,
-    `attempted_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    KEY `idx_email` (`email`),
-    KEY `idx_ip_address` (`ip_address`),
-    KEY `idx_attempted_at` (`attempted_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Listage de la structure de table job_dating_youcode. login_attempts
+CREATE TABLE IF NOT EXISTS `login_attempts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `success` tinyint(1) NOT NULL DEFAULT '0',
+  `attempted_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_email` (`email`),
+  KEY `idx_ip_address` (`ip_address`),
+  KEY `idx_attempted_at` (`attempted_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =============================================
--- Insert sample data
--- =============================================
+-- Listage des données de la table job_dating_youcode.login_attempts : ~0 rows (environ)
+DELETE FROM `login_attempts`;
+INSERT INTO `login_attempts` (`id`, `email`, `ip_address`, `success`, `attempted_at`) VALUES
+	(1, 'med@med.com', '::1', 0, '2026-01-21 16:19:43'),
+	(2, 'med@med.com', '::1', 0, '2026-01-21 16:19:56'),
+	(3, 'hewura@mailinator.com', '::1', 1, '2026-01-21 16:22:56'),
+	(4, 'hewura@mailinator.com', '::1', 1, '2026-01-21 16:23:21'),
+	(5, 'hewura@mailinator.com', '::1', 1, '2026-01-21 16:23:56'),
+	(6, 'hewura@mailinator.com', '::1', 1, '2026-01-21 16:28:06'),
+	(7, 'hewura@mailinator.com', '::1', 1, '2026-01-22 08:05:00'),
+	(8, 'hewura@mailinator.com', '::1', 1, '2026-01-22 08:30:13');
 
--- Insert admin user (password: admin123)
-INSERT INTO `users` (`name`, `email`, `password`, `role`) VALUES
-('Admin Principal', 'admin@jobdating.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
+-- Listage de la structure de table job_dating_youcode.applications
+CREATE TABLE IF NOT EXISTS `applications` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `student_id` int NOT NULL,
+  `announcement_id` int NOT NULL,
+  `cover_letter` text,
+  `status` enum('pending','accepted','rejected') DEFAULT 'pending',
+  `applied_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `student_id` (`student_id`),
+  KEY `announcement_id` (`announcement_id`),
+  CONSTRAINT `applications_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `applications_ibfk_2` FOREIGN KEY (`announcement_id`) REFERENCES `announcements` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Insert sample students
-INSERT INTO `users` (`name`, `email`, `password`, `role`) VALUES
-('Jean Dupont', 'jean.dupont@email.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student'),
-('Marie Martin', 'marie.martin@email.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student'),
-('Pierre Durand', 'pierre.durand@email.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student');
+ALTER TABLE applications
+ADD COLUMN `cover_letter` text AFTER `announcement_id`;
+-- Listage des données de la table job_dating_youcode.applications : ~0 rows (environ)
+DELETE FROM `applications`;
 
--- Insert student details
-INSERT INTO `students` (`user_id`, `promotion`, `specialization`, `bio`, `skills`) VALUES
-(2, '2024-2025', 'informatique', 'Étudiant passionné en développement web', 'PHP, JavaScript, MySQL, React'),
-(3, '2024-2025', 'genie-civil', 'Intéressé par les projets de construction durable', 'AutoCAD, Revit, BIM'),
-(4, '2023-2024', 'marketing', 'Spécialisé en marketing digital', 'SEO, Google Ads, Social Media, Analytics');
+-- Listage de la structure de table job_dating_youcode. students
+CREATE TABLE IF NOT EXISTS `students` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `promotion` varchar(50) DEFAULT NULL,
+  `specialisation` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `students_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Insert sample announcements
-INSERT INTO `announcements` (`title`, `description`, `company`, `location`, `type`, `duration`, `requirements`, `contact_email`, `created_by`) VALUES
-('Développeur Web Stage', 'Recherche développeur web pour stage de 6 mois. Connaissance de PHP/MySQL requise.', 'Tech Company', 'Paris', 'internship', '6 mois', 'PHP, MySQL, HTML, CSS, JavaScript. Anglais technique requis.', 'rh@techcompany.com', 1),
-('Stage Génie Civil', 'Stage en génie civil pour projet d\'infrastructure.', 'Construction Pro', 'Lyon', 'internship', '3 mois', 'AutoCAD, Revit. Permis de conduire nécessaire.', 'jobs@constructionpro.com', 1),
-('Marketing Digital Alternance', 'Alternance en marketing digital pour étudiant Bac+2.', 'Digital Agency', 'Marseille', 'alternance', '2 ans', 'Connaissance des réseaux sociaux, Google Analytics.', 'contact@digitalagency.com', 1);
+-- Listage des données de la table job_dating_youcode.students : ~0 rows (environ)
+DELETE FROM `students`;
+INSERT INTO `students` (`id`, `user_id`, `promotion`, `specialisation`) VALUES
+	(1, 5, '2025-2026', 'informatique');
 
--- =============================================
--- Indexes for performance optimization
--- =============================================
+-- Listage de la structure de table job_dating_youcode. users
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` enum('admin','student') NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Additional indexes for better performance
-CREATE INDEX `idx_users_email_role` ON `users` (`email`, `role`);
-CREATE INDEX `idx_students_promo_spec` ON `students` (`promotion`, `specialization`);
-CREATE INDEX `idx_announcements_type_active` ON `announcements` (`type`, `is_active`);
-CREATE INDEX `idx_applications_status_student` ON `applications` (`status`, `student_id`);
-CREATE INDEX `idx_login_attempts_email_ip_time` ON `login_attempts` (`email`, `ip_address`, `attempted_at`);
+-- Listage des données de la table job_dating_youcode.users : ~5 rows (environ)
+DELETE FROM `users`;
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`) VALUES
+	(1, 'Ahmed Mohammed', 'ahmed@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student', '2026-01-21 09:57:44'),
+	(2, 'Fatima Zahra', 'fatima@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student', '2026-01-21 09:57:44'),
+	(3, 'Youssef Ali', 'youssef@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student', '2026-01-21 09:57:44'),
+	(4, 'med', 'med@med.com', 'facebook', 'admin', '2026-01-21 16:11:37'),
+	(5, 'Camille Bolton', 'hewura@mailinator.com', '$2y$10$GJWgdO.fR85x.VBPa/1Eqe7OqemRu4LJBO6RdcyTtm9vR6ztWP552', 'admin', '2026-01-21 16:22:25');
 
--- =============================================
--- Views for common queries
--- =============================================
-
--- View: Student profiles with user info
-CREATE VIEW `student_profiles` AS
-SELECT 
-    u.id,
-    u.name,
-    u.email,
-    u.created_at as user_created_at,
-    s.promotion,
-    s.specialization,
-    s.cv_path,
-    s.linkedin_url,
-    s.portfolio_url,
-    s.bio,
-    s.skills,
-    s.looking_for_job,
-    s.created_at as student_created_at
-FROM users u
-INNER JOIN students s ON u.id = s.user_id
-WHERE u.role = 'student';
-
--- View: Active announcements with company info
-CREATE VIEW `active_announcements` AS
-SELECT 
-    a.id,
-    a.title,
-    a.description,
-    a.company,
-    a.location,
-    a.type,
-    a.duration,
-    a.salary,
-    a.requirements,
-    a.contact_email,
-    a.expires_at,
-    a.created_at,
-    u.name as created_by_name
-FROM announcements a
-INNER JOIN users u ON a.created_by = u.id
-WHERE a.is_active = 1 
-AND (a.expires_at IS NULL OR a.expires_at > CURRENT_TIMESTAMP);
-
--- =============================================
--- Stored procedures for common operations
--- =============================================
-
-DELIMITER //
-
--- Procedure: Get student applications
-CREATE PROCEDURE `GetStudentApplications`(IN student_user_id INT)
-BEGIN
-    SELECT 
-        a.id as application_id,
-        a.status,
-        a.applied_at,
-        ann.title,
-        ann.company,
-        ann.location,
-        ann.type
-    FROM applications a
-    INNER JOIN announcements ann ON a.announcement_id = ann.id
-    INNER JOIN students s ON a.student_id = s.id
-    WHERE s.user_id = student_user_id
-    ORDER BY a.applied_at DESC;
-END //
-
--- Procedure: Get announcement statistics
-CREATE PROCEDURE `GetAnnouncementStats`()
-BEGIN
-    SELECT 
-        COUNT(*) as total_announcements,
-        COUNT(CASE WHEN is_active = 1 THEN 1 END) as active_announcements,
-        COUNT(CASE WHEN type = 'internship' THEN 1 END) as internships,
-        COUNT(CASE WHEN type = 'job' THEN 1 END) as jobs,
-        COUNT(CASE WHEN type = 'alternance' THEN 1 END) as alternances
-    FROM announcements;
-END //
-
-DELIMITER ;
-
--- =============================================
--- Final notes
--- =============================================
-
--- Default passwords for sample accounts:
--- Admin: admin@jobdating.com / admin123
--- Students: *.email.com / password
-
--- Remember to:
--- 1. Change default passwords in production
--- 2. Set up proper database user permissions
--- 3. Configure backup strategy
--- 4. Set up monitoring for the database
+/*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;

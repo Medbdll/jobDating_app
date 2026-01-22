@@ -1,0 +1,141 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<div class="w-full max-w-4xl mx-auto">
+    <!-- Back Button -->
+    <div class="mb-6">
+        <a href="/student/dashboard/announcement/{{ announcement.id }}" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 transition-colors duration-300">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Retour à l'annonce
+        </a>
+    </div>
+
+    <!-- Application Form -->
+    <div class="glass-effect rounded-2xl p-8 fade-in">
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-6 text-white">
+                <h1 class="text-3xl font-bold mb-2">Postuler à l'offre</h1>
+                <p class="text-indigo-100">{{ announcement.title }} - {{ announcement.company_name }}</p>
+            </div>
+
+            <!-- Flash Messages -->
+            {% if flash_messages is not empty %}
+                {% for type, message in flash_messages %}
+                    <div class="alert mb-6 p-4 rounded-lg {% if type == 'success' %}bg-green-100 text-green-700 border border-green-200{% elseif type == 'error' %}bg-red-100 text-red-700 border border-red-200{% else %}bg-blue-100 text-blue-700 border border-blue-200{% endif %}">
+                        <div class="flex items-center">
+                            <i class="fas {% if type == 'success' %}fa-check-circle{% elseif type == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %} mr-3"></i>
+                            <span>{{ message }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Form -->
+            <form action="/student/dashboard/apply/{{ announcement.id }}/store" method="POST" class="p-8">
+                <!-- Announcement Summary -->
+                <div class="mb-8 p-6 bg-gray-50 rounded-lg">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Récapitulatif de l'offre</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Poste</p>
+                            <p class="font-medium text-gray-800">{{ announcement.title }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Entreprise</p>
+                            <p class="font-medium text-gray-800">{{ announcement.company_name }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Localisation</p>
+                            <p class="font-medium text-gray-800">{{ announcement.location }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Type de contrat</p>
+                            <p class="font-medium text-gray-800">{{ announcement.contract_type }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cover Letter -->
+                <div class="mb-8">
+                    <label for="cover_letter" class="block text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-pen-fancy mr-2 text-indigo-500"></i>
+                        Lettre de motivation *
+                    </label>
+                    <textarea 
+                        id="cover_letter" 
+                        name="cover_letter" 
+                        rows="12" 
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none input-field"
+                        placeholder="Expliquez pourquoi vous êtes intéressé(e) par cette offre et pourquoi vous pensez être le/la candidat(e) idéal(e)..."
+                    ></textarea>
+                    <p class="text-sm text-gray-500 mt-2">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Décrivez vos motivations, vos compétences pertinentes et votre projet professionnel.
+                    </p>
+                </div>
+
+                <!-- Applicant Information -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-user mr-2 text-indigo-500"></i>
+                        Vos informations
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Nom complet</p>
+                            <p class="font-medium text-gray-800">{{ session.get('user_name') }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Email</p>
+                            <p class="font-medium text-gray-800">{{ session.get('user_email') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terms -->
+                <div class="mb-8">
+                    <label class="flex items-start">
+                        <input type="checkbox" required class="mt-1 mr-3 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                        <span class="text-sm text-gray-600">
+                            Je certifie que les informations fournies sont exactes et j'accepte que mes données soient traitées 
+                            dans le cadre de ma candidature. Je comprends que fausses déclarations pourraient entraîner 
+                            le rejet de ma candidature.
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button type="submit" class="flex-1 btn-primary px-6 py-3 text-white font-medium rounded-lg hover:shadow-lg transition-all duration-300">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Envoyer ma candidature
+                    </button>
+                    <a href="/student/dashboard/announcement/{{ announcement.id }}" class="px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors duration-300 text-center">
+                        <i class="fas fa-times mr-2"></i>
+                        Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.input-field {
+    transition: all 0.3s ease;
+}
+.input-field:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+</style>
+{% endblock %}

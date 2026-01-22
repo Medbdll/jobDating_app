@@ -28,9 +28,8 @@ class Announcement extends BaseModel
     public function getRecent($limit = 3)
     {
         $stmt = $this->db->prepare("
-            SELECT a.*, c.name as company_name, c.location as company_location 
+            SELECT a.*
             FROM {$this->table} a 
-            LEFT JOIN companies c ON a.company_id = c.id 
             WHERE a.deleted = 0 
             ORDER BY a.created_at DESC 
             LIMIT :limit
@@ -43,7 +42,7 @@ class Announcement extends BaseModel
     public function getArchived()
     {
         $stmt = $this->db->prepare("
-            SELECT a.*, c.name as company_name, c.location as company_location 
+            SELECT a.*
             FROM {$this->table} a 
             LEFT JOIN companies c ON a.company_id = c.id 
             WHERE a.deleted = 1 
@@ -57,7 +56,6 @@ class Announcement extends BaseModel
     {
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['updated_at'] = date('Y-m-d H:i:s');
-        $data['deleted'] = 0;
         
         $columns = implode(", ", array_keys($data));
         $placeholders = ":" . implode(", :", array_keys($data));
@@ -93,13 +91,24 @@ class Announcement extends BaseModel
     public function findById($id)
     {
         $stmt = $this->db->prepare("
-            SELECT a.*, c.name as company_name, c.location as company_location 
+            SELECT a.*
             FROM {$this->table} a 
-            LEFT JOIN companies c ON a.company_id = c.id 
             WHERE a.id = :id
         ");
         $stmt->execute(['id' => $id]);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function getAllActive()
+    {
+        $stmt = $this->db->prepare("
+            SELECT a.*
+            FROM {$this->table} a 
+            WHERE a.deleted = 0 
+            ORDER BY a.created_at DESC
+        ");
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function delete($id)

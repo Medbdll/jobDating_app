@@ -13,6 +13,11 @@ class AnnouncementController extends BaseController
         $companyModel = new Company();
         $companies = $companyModel->getAll();
         
+        // Debug: Check if companies are loaded
+        if (empty($companies)) {
+            $_SESSION['flash']['error'] = 'Aucune entreprise disponible. Veuillez d\'abord créer des entreprises.';
+        }
+        
         $this->render('back/announcements/create', [
             'companies' => $companies
         ]);
@@ -21,13 +26,20 @@ class AnnouncementController extends BaseController
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Debug: Check if company_id is in POST data
+            if (!isset($_POST['company_id']) || empty($_POST['company_id'])) {
+                $_SESSION['flash']['error'] = 'Veuillez sélectionner une entreprise';
+                $this->redirect('/announcements/create');
+                return;
+            }
+            
             $data = [
                 'company_id' => $_POST['company_id'],
                 'title' => $_POST['title'],
                 'description' => $_POST['description'],
-                'contract_type' => $_POST['contract_type'],
-                'location' => $_POST['location'],
-                'skills' => $_POST['skills']
+                'contract_type' => $_POST['type'] ?? 'internship',
+                'location' => $_POST['location'] ?? null,
+                'skills' => $_POST['skills'] ?? null
             ];
 
             $announcementModel = new Announcement();
@@ -88,13 +100,20 @@ class AnnouncementController extends BaseController
     public function update($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Debug: Check if company_id is in POST data
+            if (!isset($_POST['company_id']) || empty($_POST['company_id'])) {
+                $_SESSION['flash']['error'] = 'Veuillez sélectionner une entreprise';
+                $this->redirect('/announcements/edit/' . $id);
+                return;
+            }
+            
             $data = [
                 'company_id' => $_POST['company_id'],
                 'title' => $_POST['title'],
                 'description' => $_POST['description'],
-                'contract_type' => $_POST['contract_type'],
-                'location' => $_POST['location'],
-                'skills' => $_POST['skills']
+                'contract_type' => $_POST['type'] ?? 'internship',
+                'location' => $_POST['location'] ?? null,
+                'skills' => $_POST['skills'] ?? null
             ];
 
             $announcementModel = new Announcement();
