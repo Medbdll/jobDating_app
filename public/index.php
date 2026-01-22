@@ -9,6 +9,7 @@ use App\Controllers\back\DashboardController;
 use App\Controllers\back\StudentController;
 use App\Controllers\back\AnnouncementController;
 use App\Controllers\back\CampanyController;
+use App\Controllers\back\ApplicationController;
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -63,6 +64,12 @@ $router->get('/companies', [CampanyController::class, 'index']);
 $router->get('/companies/edit/{id}', [CampanyController::class, 'edit']);
 $router->post('/companies/update/{id}', [CampanyController::class, 'update']);
 $router->post('/companies/delete/{id}', [CampanyController::class, 'delete']);
+
+// Application routes
+$router->get('/applications', [ApplicationController::class, 'index']);
+$router->post('/applications/accept/{id}', [ApplicationController::class, 'accept']);
+$router->post('/applications/reject/{id}', [ApplicationController::class, 'reject']);
+$router->post('/applications/pending/{id}', [ApplicationController::class, 'pending']);
 
 // 404 route
 $router->get('/404', function(){

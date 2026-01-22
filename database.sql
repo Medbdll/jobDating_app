@@ -93,7 +93,7 @@ INSERT INTO `login_attempts` (`id`, `email`, `ip_address`, `success`, `attempted
 	(7, 'hewura@mailinator.com', '::1', 1, '2026-01-22 08:05:00'),
 	(8, 'hewura@mailinator.com', '::1', 1, '2026-01-22 08:30:13');
 
--- Listage de la structure de table job_dating_youcode.applications
+--@block Listage de la structure de table job_dating_youcode.applications
 CREATE TABLE IF NOT EXISTS `applications` (
   `id` int NOT NULL AUTO_INCREMENT,
   `student_id` int NOT NULL,

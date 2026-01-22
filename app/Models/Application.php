@@ -175,4 +175,45 @@ class Application extends BaseModel
         }
         return $stmt->fetchColumn();
     }
+
+    /**
+     * Get all applications with student and announcement details
+     */
+    public function getAllWithDetails()
+    {
+        $stmt = $this->db->prepare("
+            SELECT a.*, ann.title as announcement_title, ann.location as announcement_location,
+                   c.name as company_name, u.name as student_name, u.email as student_email,
+                   s.promotion, s.specialisation
+            FROM {$this->table} a
+            INNER JOIN announcements ann ON a.announcement_id = ann.id
+            INNER JOIN companies c ON ann.company_id = c.id
+            INNER JOIN students s ON a.student_id = s.id
+            INNER JOIN users u ON s.user_id = u.id
+            ORDER BY a.applied_at DESC
+        ");
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    //Get recent applications with details
+    
+    public function getRecentApplications($limit = 5)
+    {
+        $stmt = $this->db->prepare("
+            SELECT a.*, ann.title as announcement_title, ann.location as announcement_location,
+                   c.name as company_name, u.name as student_name, u.email as student_email,
+                   s.promotion, s.specialisation
+            FROM {$this->table} a
+            INNER JOIN announcements ann ON a.announcement_id = ann.id
+            INNER JOIN companies c ON ann.company_id = c.id
+            INNER JOIN students s ON a.student_id = s.id
+            INNER JOIN users u ON s.user_id = u.id
+            ORDER BY a.applied_at DESC
+            LIMIT :limit
+        ");
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }
