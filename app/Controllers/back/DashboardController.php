@@ -17,7 +17,7 @@ class DashboardController extends BaseController
         parent::__construct();
         $this->auth = new Auth();
         
-        // Require admin authentication
+        
         $this->auth->requireAuth('admin');
     }
 
