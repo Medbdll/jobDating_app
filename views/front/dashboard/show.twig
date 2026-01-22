@@ -125,11 +125,18 @@
 
                 <!-- Action Buttons -->
                 <div class="mt-8 flex flex-col sm:flex-row gap-4">
-                    {% if has_applied %}
-                        <div class="flex-1 px-6 py-3 bg-green-100 text-green-700 font-medium rounded-lg text-center">
-                            <i class="fas fa-check-circle mr-2"></i>
-                            Vous avez déjà postulé à cette offre
-                        </div>
+                    {% if has_any_application %}
+                        {% if has_applied_to_this %}
+                            <div class="flex-1 px-6 py-3 bg-green-100 text-green-700 font-medium rounded-lg text-center">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                Vous avez déjà postulé à cette offre
+                            </div>
+                        {% else %}
+                            <button disabled class="flex-1 px-6 py-3 bg-gray-400 text-gray-200 font-medium rounded-lg cursor-not-allowed opacity-60">
+                                <i class="fas fa-lock mr-2"></i>
+                                Indisponible - Vous avez déjà postulé à une autre offre
+                            </button>
+                        {% endif %}
                         <a href="/student/dashboard/applications" class="px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors duration-300">
                             <i class="fas fa-list mr-2"></i>
                             Voir mes candidatures

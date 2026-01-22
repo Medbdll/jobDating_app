@@ -31,6 +31,15 @@ class StudentController extends BaseController
         
         $studentId = $applicationModel->getStudentIdByUserId($session->get('user_id'));
         
+        // Handle search functionality
+        $searchQuery = $_GET['search'] ?? null;
+        
+        if ($searchQuery && !empty(trim($searchQuery))) {
+            $announcements = $announcementModel->search(trim($searchQuery));
+        } else {
+            $announcements = $announcementModel->getAllActive();
+        }
+        
         // Get student data
         $student = $studentModel->findByUserId($session->get('user_id'));
         
@@ -48,9 +57,6 @@ class StudentController extends BaseController
         $recentApplications = $applicationModel->getByStudent($studentId);
         $recentApplications = array_slice($recentApplications, 0, 3);
         
-        // Get all announcements for display
-        $announcements = $announcementModel->getAllActive();
-        
         // Get recommended announcements (based on student's specialisation)
         $recommendedAnnouncements = [];
         if ($student && $student['specialisation']) {
@@ -67,6 +73,7 @@ class StudentController extends BaseController
             'recent_applications' => $recentApplications,
             'recommended_announcements' => $recommendedAnnouncements,
             'announcements' => $announcements,
+            'search_query' => $searchQuery,
             'session' => $session,
             'flash_messages' => $session->getFlash()
         ]);

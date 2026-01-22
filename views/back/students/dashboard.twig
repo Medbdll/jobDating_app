@@ -141,25 +141,39 @@
                                     <div class="flex-1">
                                         <div class="flex items-center space-x-3 mb-2">
                                             <span class="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-medium rounded-full">
-                                                {{ announcement.type }}
+                                                {% if announcement.contract_type and announcement.contract_type|trim != '' %}
+                                                    {{ announcement.contract_type }}
+                                                {% else %}
+                                                    Non spécifié
+                                                {% endif %}
                                             </span>
                                             <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                                                {{ announcement.company }}
+                                                {% if announcement.company_name and announcement.company_name|trim != '' %}
+                                                    {{ announcement.company_name }}
+                                                {% else %}
+                                                    Entreprise non spécifiée
+                                                {% endif %}
                                             </span>
                                         </div>
                                         <h3 class="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">{{ announcement.title }}</h3>
                                         <p class="text-sm text-gray-600 mb-3 line-clamp-3">{{ announcement.description }}</p>
                                         
                                         <div class="flex flex-wrap gap-2 mb-3">
-                                            {% set skills = announcement.skills|split(',') %}
-                                            {% for skill in skills[:4] %}
-                                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                                                    {{ skill|trim }}
-                                                </span>
-                                            {% endfor %}
-                                            {% if skills|length > 4 %}
-                                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                                                    +{{ skills|length - 4 }}
+                                            {% if announcement.skills and announcement.skills|trim != '' %}
+                                                {% set skills = announcement.skills|split(',') %}
+                                                {% for skill in skills[:4] %}
+                                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                                                        {{ skill|trim }}
+                                                    </span>
+                                                {% endfor %}
+                                                {% if skills|length > 4 %}
+                                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                                                        +{{ skills|length - 4 }}
+                                                    </span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="px-2 py-1 bg-gray-100 text-gray-400 text-xs rounded-full">
+                                                    Aucune compétence spécifiée
                                                 </span>
                                             {% endif %}
                                         </div>
@@ -167,7 +181,11 @@
                                         <div class="flex items-center justify-between text-sm text-gray-500">
                                             <span class="flex items-center">
                                                 <i class="fas fa-map-marker-alt mr-1 text-red-500"></i>
-                                                {{ announcement.location }}
+                                                {% if announcement.location and announcement.location|trim != '' %}
+                                                    {{ announcement.location }}
+                                                {% else %}
+                                                    Lieu non spécifié
+                                                {% endif %}
                                             </span>
                                             <span class="flex items-center">
                                                 <i class="far fa-calendar mr-1 text-green-500"></i>
@@ -344,7 +362,7 @@ function filterAnnouncements() {
     
     // Filter by type
     if (typeFilter) {
-        filtered = filtered.filter(announcement => announcement.type === typeFilter);
+        filtered = filtered.filter(announcement => announcement.contract_type === typeFilter);
     }
     
     // Filter by search
@@ -352,8 +370,8 @@ function filterAnnouncements() {
         filtered = filtered.filter(announcement => 
             announcement.title.toLowerCase().includes(searchInput) ||
             announcement.description.toLowerCase().includes(searchInput) ||
-            announcement.company.toLowerCase().includes(searchInput) ||
-            announcement.location.toLowerCase().includes(searchInput) ||
+            (announcement.company_name && announcement.company_name.toLowerCase().includes(searchInput)) ||
+            (announcement.location && announcement.location.toLowerCase().includes(searchInput)) ||
             (announcement.skills && announcement.skills.toLowerCase().includes(searchInput))
         );
     }
@@ -382,10 +400,10 @@ function updateAnnouncementsList(announcements) {
                     <div class="flex-1">
                         <div class="flex items-center space-x-3 mb-2">
                             <span class="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-medium rounded-full">
-                                ${announcement.type}
+                                ${announcement.contract_type || 'Non spécifié'}
                             </span>
                             <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                                ${announcement.company}
+                                ${announcement.company_name || 'Entreprise non spécifiée'}
                             </span>
                         </div>
                         <h3 class="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">${announcement.title}</h3>
@@ -402,7 +420,7 @@ function updateAnnouncementsList(announcements) {
                         <div class="flex items-center justify-between text-sm text-gray-500">
                             <span class="flex items-center">
                                 <i class="fas fa-map-marker-alt mr-1 text-red-500"></i>
-                                ${announcement.location}
+                                ${announcement.location || 'Lieu non spécifié'}
                             </span>
                             <span class="flex items-center">
                                 <i class="far fa-calendar mr-1 text-green-500"></i>
