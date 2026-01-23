@@ -31,6 +31,7 @@ $router->post('/register', [AuthController::class, 'register']);
 
 // Student routes
 $router->get('/student/dashboard', [StudentController::class, 'dashboard']);
+$router->get('/student/dashboard/search', [StudentController::class, 'searchAnnouncements']);
 $router->get('/student/dashboard/profile', [StudentController::class, 'profile']);
 $router->post('/student/dashboard/profile', [StudentController::class, 'profile']);
 $router->get('/student/dashboard/applications', [StudentController::class, 'applications']);

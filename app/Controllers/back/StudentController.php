@@ -79,6 +79,40 @@ class StudentController extends BaseController
         ]);
     }
 
+    public function searchAnnouncements()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            http_response_code(405);
+            echo json_encode(['error' => 'Method not allowed']);
+            return;
+        }
+
+        $searchQuery = $_GET['search'] ?? '';
+        $typeFilter = $_GET['type'] ?? '';
+        
+        $announcementModel = new Announcement();
+        
+        if (!empty(trim($searchQuery))) {
+            $announcements = $announcementModel->search(trim($searchQuery));
+        } else {
+            $announcements = $announcementModel->getAllActive();
+        }
+        
+        // Apply type filter if specified
+        if (!empty($typeFilter)) {
+            $announcements = array_filter($announcements, function($announcement) use ($typeFilter) {
+                return $announcement['contract_type'] === $typeFilter;
+            });
+        }
+        
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'announcements' => array_values($announcements),
+            'count' => count($announcements)
+        ]);
+    }
+
     public function profile()
     {
         $session = Session::getInstance();
