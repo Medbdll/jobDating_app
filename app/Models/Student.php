@@ -51,6 +51,21 @@ class Student extends BaseModel
     }
 
     /**
+     * Get all students with their user details
+     */
+    public function getAllWithDetails()
+    {
+        $stmt = $this->db->prepare("
+            SELECT s.*, u.name, u.email, u.created_at
+            FROM {$this->table} s 
+            LEFT JOIN users u ON s.user_id = u.id 
+            ORDER BY u.created_at DESC
+        ");
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
      * Find student by user ID
      */
     public function findByUserId($userId)

@@ -17,13 +17,27 @@ class StudentController extends BaseController
     {
         parent::__construct();
         $this->auth = new Auth();
-        
-        // Require student authentication
-        $this->auth->requireAuth('student');
     }
+    
+
+    // list tous les etudient pour l'afichage de l' admin 
+    public function index()
+    {
+        $this->auth->requireAuth('admin');
+        
+        $studentModel = new Student();
+        $students = $studentModel->getAllWithDetails();
+        
+        $this->render('back/students/index', [
+            'students' => $students
+        ]);
+    }
+   
+
 
     public function dashboard()
     {
+        $this->auth->requireAuth('student');
         $session = Session::getInstance();
         $applicationModel = new Application();
         $announcementModel = new Announcement();
@@ -115,6 +129,7 @@ class StudentController extends BaseController
 
     public function profile()
     {
+        $this->auth->requireAuth('student');
         $session = Session::getInstance();
         $studentModel = new Student();
         
@@ -146,6 +161,8 @@ class StudentController extends BaseController
 
     public function applications()
     {
+        $this->auth->requireAuth('student');
+        
         $session = Session::getInstance();
         $applicationModel = new Application();
         

@@ -45,6 +45,9 @@ $router->get('/announcements', function() {
     echo '<a href="/logout">Logout</a>';
 });
 
+// Admin student management route
+$router->get('/students', [StudentController::class, 'index']);
+
 // Admin routes
 $router->get('/admin/dashboard', [DashboardController::class, 'index']);
 
