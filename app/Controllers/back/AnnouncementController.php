@@ -75,6 +75,32 @@ class AnnouncementController extends BaseController
         ]);
     }
 
+    public function unarchive($id)
+    {
+        $announcementModel = new Announcement();
+        
+        if ($announcementModel->update($id, ['deleted' => 0])) {
+            $_SESSION['flash']['success'] = 'Annonce désarchivée avec succès!';
+        } else {
+            $_SESSION['flash']['error'] = 'Erreur lors de la désarchivage';
+        }
+        
+        $this->redirect('/announcements/archived');
+    }
+
+    public function deleteArchived($id)
+    {
+        $announcementModel = new Announcement();
+        
+        if ($announcementModel->deletePermanent($id)) {
+            $_SESSION['flash']['success'] = 'Annonce supprimée avec succès!';
+        } else {
+            $_SESSION['flash']['error'] = 'Erreur lors de la suppression';
+        }
+        
+        $this->redirect('/announcements/archived');
+    }
+
     public function edit($id)
     {
         $announcementModel = new Announcement();

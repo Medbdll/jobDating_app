@@ -57,6 +57,8 @@ $router->get('/announcements/show/{id}', [AnnouncementController::class, 'show']
 $router->post('/announcements/delete/{id}', [AnnouncementController::class, 'delete']);
 $router->get('/announcements/archived', [AnnouncementController::class, 'archived']);
 $router->post('/announcements/archive/{id}', [AnnouncementController::class, 'archive']);
+$router->post('/announcements/unarchive/{id}', [AnnouncementController::class, 'unarchive']);
+$router->post('/announcements/deleteArchived/{id}', [AnnouncementController::class, 'deleteArchived']);
 
 // Company routes
 $router->get('/companies/create', [CampanyController::class, 'create']);
