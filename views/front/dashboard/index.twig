@@ -123,6 +123,34 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {% for announcement in announcements %}
                     <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-indigo-200">
+                        <!-- Announcement Image -->
+                        {% if announcement.image %}
+                            <div class="h-48 bg-gradient-to-br from-indigo-100 to-purple-100 relative overflow-hidden">
+                                <img src="/{{ announcement.image }}" alt="{{ announcement.title }}" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                                <span class="absolute top-4 right-4 px-3 py-1 bg-white/90 backdrop-blur-sm text-indigo-700 text-xs font-medium rounded-full">
+                                    {% if announcement.contract_type and announcement.contract_type|trim != '' %}
+                                        {{ announcement.contract_type }}
+                                    {% else %}
+                                        Non spécifié
+                                    {% endif %}
+                                </span>
+                            </div>
+                        {% else %}
+                            <div class="h-48 bg-gradient-to-br from-indigo-100 to-purple-100 relative flex items-center justify-center">
+                                <div class="text-center">
+                                    <i class="fas fa-briefcase text-4xl text-indigo-300 mb-2"></i>
+                                    <span class="px-3 py-1 bg-white/90 backdrop-blur-sm text-indigo-700 text-xs font-medium rounded-full">
+                                        {% if announcement.contract_type and announcement.contract_type|trim != '' %}
+                                            {{ announcement.contract_type }}
+                                        {% else %}
+                                            Non spécifié
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
                         <div class="p-6">
                             <div class="flex justify-between items-start mb-4">
                                 <div class="flex-1">
@@ -148,13 +176,6 @@
                                         </span>
                                     </div>
                                 </div>
-                                <span class="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-medium rounded-full">
-                                    {% if announcement.contract_type and announcement.contract_type|trim != '' %}
-                                        {{ announcement.contract_type }}
-                                    {% else %}
-                                        Non spécifié
-                                    {% endif %}
-                                </span>
                             </div>
                             
                             <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ announcement.description }}</p>

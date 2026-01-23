@@ -42,6 +42,31 @@ class AnnouncementController extends BaseController
                 'skills' => $_POST['skills'] ?? null
             ];
 
+            // Handle image upload
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $uploadDir = __DIR__ . '/../../../public/uploads/announcements/';
+                $fileName = time() . '_' . basename($_FILES['image']['name']);
+                $targetPath = $uploadDir . $fileName;
+                
+                // Validate file type
+                $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                $fileType = mime_content_type($_FILES['image']['tmp_name']);
+                
+                if (in_array($fileType, $allowedTypes)) {
+                    if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
+                        $data['image'] = 'uploads/announcements/' . $fileName;
+                    } else {
+                        $_SESSION['flash']['error'] = 'Erreur lors du téléchargement de l\'image';
+                        $this->redirect('/announcements/create');
+                        return;
+                    }
+                } else {
+                    $_SESSION['flash']['error'] = 'Type de fichier non autorisé. Seules les images JPEG, PNG, GIF et WebP sont acceptées.';
+                    $this->redirect('/announcements/create');
+                    return;
+                }
+            }
+
             $announcementModel = new Announcement();
             
             if ($announcementModel->create($data)) {
@@ -115,6 +140,41 @@ class AnnouncementController extends BaseController
                 'location' => $_POST['location'] ?? null,
                 'skills' => $_POST['skills'] ?? null
             ];
+
+            // Handle image upload
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $uploadDir = __DIR__ . '/../../../public/uploads/announcements/';
+                $fileName = time() . '_' . basename($_FILES['image']['name']);
+                $targetPath = $uploadDir . $fileName;
+                
+                // Validate file type
+                $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                $fileType = mime_content_type($_FILES['image']['tmp_name']);
+                
+                if (in_array($fileType, $allowedTypes)) {
+                    if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
+                        $data['image'] = 'uploads/announcements/' . $fileName;
+                        
+                        // Delete old image if exists
+                        $announcementModel = new Announcement();
+                        $oldAnnouncement = $announcementModel->findById($id);
+                        if ($oldAnnouncement && !empty($oldAnnouncement['image'])) {
+                            $oldImagePath = __DIR__ . '/../../../public/' . $oldAnnouncement['image'];
+                            if (file_exists($oldImagePath)) {
+                                unlink($oldImagePath);
+                            }
+                        }
+                    } else {
+                        $_SESSION['flash']['error'] = 'Erreur lors du téléchargement de l\'image';
+                        $this->redirect('/announcements/edit/' . $id);
+                        return;
+                    }
+                } else {
+                    $_SESSION['flash']['error'] = 'Type de fichier non autorisé. Seules les images JPEG, PNG, GIF et WebP sont acceptées.';
+                    $this->redirect('/announcements/edit/' . $id);
+                    return;
+                }
+            }
 
             $announcementModel = new Announcement();
             
