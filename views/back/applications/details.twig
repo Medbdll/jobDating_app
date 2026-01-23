@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails de la Candidature - Job Dating YouCode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#667eea',
+                        secondary: '#764ba2',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-primary to-secondary min-h-screen p-4 md:p-6">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="bg-white rounded-2xl shadow-2xl p-6 mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <h1 class="text-2xl md:text-3xl font-bold text-primary flex items-center gap-3">
+                <span class="text-3xl">📋</span>
+                Détails de la Candidature
+            </h1>
+            <div class="flex gap-3">
+                <a href="/applications" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-all duration-300 hover:shadow-lg">
+                    <span>🔙</span>
+                    Retour aux Candidatures
+                </a>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="bg-white rounded-2xl shadow-2xl p-6">
+            {% if application %}
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Informations sur l'étudiant -->
+                    <div class="bg-gray-50 rounded-xl p-6">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <span>👤</span> Informations sur l'étudiant
+                        </h4>
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-sm text-gray-500">Nom complet</span>
+                                <p class="font-medium text-gray-900">{{ application.student_name }}</p>
+                            </div>
+                            <div>
+                                <span class="text-sm text-gray-500">Email</span>
+                                <p class="font-medium text-gray-900">{{ application.student_email }}</p>
+                            </div>
+                            <div>
+                                <span class="text-sm text-gray-500">Promotion</span>
+                                <p class="font-medium text-gray-900">{{ application.promotion ?? 'Non spécifiée' }}</p>
+                            </div>
+                            <div>
+                                <span class="text-sm text-gray-500">Spécialisation</span>
+                                <p class="font-medium text-gray-900">{{ application.specialisation ?? 'Non spécifiée' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Informations sur l'annonce -->
+                    <div class="bg-gray-50 rounded-xl p-6">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <span>💼</span> Détails de l'annonce
+                        </h4>
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-sm text-gray-500">Titre de l'annonce</span>
+                                <p class="font-medium text-gray-900">{{ application.announcement_title }}</p>
+                            </div>
+                            <div>
+                                <span class="text-sm text-gray-500">Entreprise</span>
+                                <p class="font-medium text-gray-900">{{ application.company_name }}</p>
+                            </div>
+                            <div>
+                                <span class="text-sm text-gray-500">Lieu</span>
+                                <p class="font-medium text-gray-900">{{ application.announcement_location ?? 'Non spécifié' }}</p>
+                            </div>
+                            <div>
+                                <span class="text-sm text-gray-500">Date de candidature</span>
+                                <p class="font-medium text-gray-900">{{ application.applied_at }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Lettre de motivation -->
+                <div class="bg-gray-50 rounded-xl p-6 mt-6">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <span>📝</span> Lettre de motivation
+                    </h4>
+                    <div class="bg-white rounded-lg p-4 border border-gray-200">
+                        <pre class="whitespace-pre-wrap text-gray-700 font-sans text-sm leading-relaxed">{{ application.cover_letter ?: 'Aucune lettre de motivation fournie' }}</pre>
+                    </div>
+                </div>
+                
+                <!-- Statut et actions -->
+                <div class="bg-gray-50 rounded-xl p-6 mt-6">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-2">Statut de la candidature</h4>
+                            <span class="px-3 py-1 rounded-full text-sm font-medium
+                                {% if application.status == 'pending' %}bg-yellow-100 text-yellow-800
+                                {% elseif application.status == 'accepted' %}bg-green-100 text-green-800
+                                {% elseif application.status == 'rejected' %}bg-red-100 text-red-800
+                                {% endif %}">
+                                {% if application.status == 'pending' %}⏳ En attente
+                                {% elseif application.status == 'accepted' %}✅ Acceptée
+                                {% elseif application.status == 'rejected' %}❌ Rejetée
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <form action="/applications/accept/{{ application.id }}" method="POST" style="display: inline;">
+                                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition-colors" onclick="return confirm('Accepter cette candidature?')">
+                                    ✅ Accepter
+                                </button>
+                            </form>
+                            <form action="/applications/reject/{{ application.id }}" method="POST" style="display: inline;">
+                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition-colors" onclick="return confirm('Rejeter cette candidature?')">
+                                    ❌ Rejeter
+                                </button>
+                            </form>
+                            {% if application.status != 'pending' %}
+                                <form action="/applications/pending/{{ application.id }}" method="POST" style="display: inline;">
+                                    <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm transition-colors" onclick="return confirm('Mettre cette candidature en attente?')">
+                                        ⏳ En attente
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center py-12">
+                    <div class="text-6xl mb-4">📋</div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2">Candidature non trouvée</h3>
+                    <p class="text-gray-500 mb-4">Cette candidature n'existe pas ou a été supprimée.</p>
+                    <a href="/applications" class="bg-primary hover:bg-opacity-90 text-white px-6 py-2 rounded-lg inline-flex items-center gap-2 transition-all duration-300 hover:shadow-lg">
+                        <span>📋</span>
+                        Retour aux Candidatures
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

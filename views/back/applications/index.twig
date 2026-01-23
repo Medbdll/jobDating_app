@@ -68,9 +68,9 @@
                             </td>
                             <td class="py-3 px-4">
                                 <div class="flex justify-center gap-2">
-                                    <button onclick="showApplicationDetails({{ application.id }})" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm transition-colors" title="Voir les détails">
+                                    <a href="/applications/details/{{ application.id }}" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm transition-colors" title="Voir les détails">
                                         voir
-                                    </button>
+                                    </a>
                                     <form action="/applications/accept/{{ application.id }}" method="POST" style="display: inline;">
                                         <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm transition-colors" title="Accepter">
                                             ✅
@@ -97,135 +97,4 @@
         </div>
     {% endif %}
 </div>
-
-<!-- Modal pour afficher les détails de la candidature -->
-<div id="applicationModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold text-gray-900">Détails de la Candidature</h3>
-                <button onclick="closeApplicationModal()" class="text-gray-500 hover:text-gray-700 text-2xl">
-                    ✕
-                </button>
-            </div>
-            
-            <div id="applicationDetails" class="space-y-6">
-                <!-- Les détails seront chargés ici via JavaScript -->
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-function showApplicationDetails(applicationId) {
-    // Simuler le chargement des détails (remplacer par un appel AJAX réel)
-    const applicationDetails = {
-        id: applicationId,
-        student_name: 'John Doe',
-        student_email: 'john.doe@example.com',
-        promotion: 'Promotion 2024',
-        specialisation: 'Développement Web',
-        announcement_title: 'Développeur Web Junior',
-        company_name: 'Tech Company',
-        announcement_location: 'Paris',
-        applied_at: '15/01/2024 14:30',
-        status: 'pending',
-        cover_letter: `Cher Monsieur/Madame,
-
-Je suis très intéressé par votre offre de poste pour un Développeur Web Junior. 
-Avec ma formation en développement web et mes projets personnels, je suis convaincu 
-que je peux apporter une réelle valeur à votre équipe.
-
-Je maîtrise HTML, CSS, JavaScript, PHP et j'ai une bonne expérience avec les frameworks 
-modernes comme React et Vue.js. Je suis passionné par le développement et j'adore 
-apprendre de nouvelles technologies.
-
-Je serais ravi de pouvoir discuter plus en détail de ma candidature lors d'un entretien.
-
-Cordialement,
-John Doe`,
-        skills: 'HTML, CSS, JavaScript, PHP, React, Vue.js, MySQL',
-        portfolio: 'https://johndoe-portfolio.com',
-        github: 'https://github.com/johndoe'
-    };
-
-    const detailsHtml = `
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Informations de l'étudiant -->
-            <div class="bg-gray-50 rounded-xl p-4">
-                <h4 class="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                    <span>👤</span> Informations de l'étudiant
-                </h4>
-                <div class="space-y-2 text-sm">
-                    <div><strong>Nom:</strong> ${applicationDetails.student_name}</div>
-                    <div><strong>Email:</strong> ${applicationDetails.student_email}</div>
-                    <div><strong>Promotion:</strong> ${applicationDetails.promotion}</div>
-                    <div><strong>Spécialisation:</strong> ${applicationDetails.specialisation}</div>
-                </div>
-            </div>
-
-            <!-- Informations de la candidature -->
-            <div class="bg-gray-50 rounded-xl p-4">
-                <h4 class="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                    <span>💼</span> Informations de la candidature
-                </h4>
-                <div class="space-y-2 text-sm">
-                    <div><strong>Poste:</strong> ${applicationDetails.announcement_title}</div>
-                    <div><strong>Entreprise:</strong> ${applicationDetails.company_name}</div>
-                    <div><strong>Localisation:</strong> ${applicationDetails.announcement_location}</div>
-                    <div><strong>Date:</strong> ${applicationDetails.applied_at}</div>
-                    <div><strong>Statut:</strong> 
-                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
-                            ⏳ En attente
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Compétences -->
-        <div class="bg-gray-50 rounded-xl p-4">
-            <h4 class="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <span>🛠️</span> Compétences
-            </h4>
-            <p class="text-sm">${applicationDetails.skills}</p>
-        </div>
-
-        <!-- Liens utiles -->
-        <div class="bg-gray-50 rounded-xl p-4">
-            <h4 class="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <span>🔗</span> Liens utiles
-            </h4>
-            <div class="space-y-2 text-sm">
-                <div><strong>Portfolio:</strong> <a href="${applicationDetails.portfolio}" target="_blank" class="text-blue-600 hover:underline">${applicationDetails.portfolio}</a></div>
-                <div><strong>GitHub:</strong> <a href="${applicationDetails.github}" target="_blank" class="text-blue-600 hover:underline">${applicationDetails.github}</a></div>
-            </div>
-        </div>
-
-        <!-- Lettre de motivation -->
-        <div class="bg-gray-50 rounded-xl p-4">
-            <h4 class="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <span>📝</span> Lettre de motivation
-            </h4>
-            <div class="bg-white rounded-lg p-4 border border-gray-200">
-                <pre class="whitespace-pre-wrap text-sm text-gray-700 font-sans">${applicationDetails.cover_letter}</pre>
-            </div>
-        </div>
-    `;
-
-    document.getElementById('applicationDetails').innerHTML = detailsHtml;
-    document.getElementById('applicationModal').classList.remove('hidden');
-}
-
-function closeApplicationModal() {
-    document.getElementById('applicationModal').classList.add('hidden');
-}
-
-// Fermer le modal en cliquant en dehors
-document.getElementById('applicationModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeApplicationModal();
-    }
-});
-</script>
 {% endblock %}

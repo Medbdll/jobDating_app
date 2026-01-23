@@ -73,6 +73,7 @@ $router->post('/companies/delete/{id}', [CampanyController::class, 'delete']);
 
 // Application routes
 $router->get('/applications', [ApplicationController::class, 'index']);
+$router->get('/applications/details/{id}', [ApplicationController::class, 'showDetails']);
 $router->post('/applications/accept/{id}', [ApplicationController::class, 'accept']);
 $router->post('/applications/reject/{id}', [ApplicationController::class, 'reject']);
 $router->post('/applications/pending/{id}', [ApplicationController::class, 'pending']);

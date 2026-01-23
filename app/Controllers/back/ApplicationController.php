@@ -18,6 +18,16 @@ class ApplicationController extends BaseController
         ]);
     }
 
+    public function showDetails($id)
+    {
+        $applicationModel = new Application();
+        $application = $applicationModel->findById($id);
+        
+        $this->render('back/applications/details', [
+            'application' => $application
+        ]);
+    }
+
     public function accept($id)
     {
         $applicationModel = new Application();
