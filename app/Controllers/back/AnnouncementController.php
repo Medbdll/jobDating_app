@@ -13,7 +13,6 @@ class AnnouncementController extends BaseController
         $companyModel = new Company();
         $companies = $companyModel->getAll();
         
-        // Debug: Check if companies are loaded
         if (empty($companies)) {
             $_SESSION['flash']['error'] = 'Aucune entreprise disponible. Veuillez d\'abord créer des entreprises.';
         }
@@ -26,7 +25,6 @@ class AnnouncementController extends BaseController
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Debug: Check if company_id is in POST data
             if (!isset($_POST['company_id']) || empty($_POST['company_id'])) {
                 $_SESSION['flash']['error'] = 'Veuillez sélectionner une entreprise';
                 $this->redirect('/announcements/create');
@@ -102,6 +100,32 @@ class AnnouncementController extends BaseController
         ]);
     }
 
+    public function unarchive($id)
+    {
+        $announcementModel = new Announcement();
+        
+        if ($announcementModel->update($id, ['deleted' => 0])) {
+            $_SESSION['flash']['success'] = 'Annonce désarchivée avec succès!';
+        } else {
+            $_SESSION['flash']['error'] = 'Erreur lors de la désarchivage';
+        }
+        
+        $this->redirect('/announcements/archived');
+    }
+
+    public function deleteArchived($id)
+    {
+        $announcementModel = new Announcement();
+        
+        if ($announcementModel->deletePermanent($id)) {
+            $_SESSION['flash']['success'] = 'Annonce supprimée avec succès!';
+        } else {
+            $_SESSION['flash']['error'] = 'Erreur lors de la suppression';
+        }
+        
+        $this->redirect('/announcements/archived');
+    }
+
     public function edit($id)
     {
         $announcementModel = new Announcement();
@@ -125,7 +149,6 @@ class AnnouncementController extends BaseController
     public function update($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Debug: Check if company_id is in POST data
             if (!isset($_POST['company_id']) || empty($_POST['company_id'])) {
                 $_SESSION['flash']['error'] = 'Veuillez sélectionner une entreprise';
                 $this->redirect('/announcements/edit/' . $id);

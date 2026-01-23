@@ -141,4 +141,10 @@ class Announcement extends BaseModel
         $stmt = $this->db->prepare("UPDATE {$this->table} SET deleted = 1 WHERE id = :id");
         return $stmt->execute(['id' => $id]);
     }
+
+    public function deletePermanent($id)
+    {
+        $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id = :id");
+        return $stmt->execute(['id' => $id]);
+    }
 }

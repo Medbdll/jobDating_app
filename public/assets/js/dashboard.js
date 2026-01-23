@@ -1,4 +1,3 @@
-// Store all announcements for filtering
 let allAnnouncements = [];
 
 // Initialize announcements from server-side data

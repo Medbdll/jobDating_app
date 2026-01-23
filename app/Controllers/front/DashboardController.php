@@ -137,7 +137,7 @@ class DashboardController extends BaseController
         $studentId = $applicationModel->getStudentIdByUserId($session->get('user_id'));
 
         // Check if student has already applied to any announcement
-        $hasApplied = $studentId ? $applicationModel->hasApplied($studentId) : false; // Check any application
+        $hasApplied = $studentId ? $applicationModel->hasApplied($studentId) : false; 
 
         if ($hasApplied) {
             $_SESSION['flash']['error'] = 'Vous avez déjà postulé à une offre. Vous ne pouvez postuler qu\'à une seule offre.';
